@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+    <script src ="/socket.io/socket.io.js"></script>
+</head>
+<body>
+    <div class = "container">
+        <br>
+        <div class="jumpbotron">
+        <h1 class = "display-4">Enviar mensaje</h1>
+        <br>
+        <input id="nombre" class="form-control" placeholder="Nombre">
+        <br>
+        <textarea id="mensaje" class="form-control" placeholder="Su mensaje va aqui"></textarea>
+        <br>
+        <button id ="enviar" class="btn btn-sucess">Enviar
+        </button>
+    </div>
+    <div id="mensajes">
+
+    </div>
+    </div>
+    <script>
+         
+        
+        $(() => {            
+
+            $("#enviar").click(()=>{
+                enviarMensaje({
+                    nombre: $("#nombre").val(),
+                    mensaje: $("#mensaje").val()
+                })
+            })
+            obtenerMensajes()
+        })
+
+            var socket = io();
+            socket.on('nuevoMensaje', agregarMenajes)
+
+        function agregarMenajes(mensaje){
+            $("#mensajes").append(`
+                <h4> ${mensaje.nombre} </h4>
+                <p> ${mensaje.mensaje} </p>
+            `)
+        }
+
+        function obtenerMensajes(){
+            $.get('http://localhost:3000/mensajes', (data) => {
+                data.forEach(agregarMenajes);
+            })
+        }
+
+
+        function enviarMensaje(mensaje){
+            $.post('http://localhost:3000/mensajes', mensaje)
+        }
+
+            
+    </script>
+    
+</body>
+</html>
+
